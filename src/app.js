@@ -6,6 +6,7 @@ var favicon = require('serve-favicon'); //favicon library to handle favicon requ
 var cookieParser = require('cookie-parser'); //Library to parse cookies from the requests
 var bodyParser = require('body-parser'); //library to handle POST requests any information sent in an HTTP body
 var mongoose = require('mongoose'); //Mongoose is one of the most popular MongoDB libraries for node
+var session = require('express-session');
 
 //In MVC, you have 'routes' that line up URLs to controller methods
 var router = require('./router.js'); //import our router.js file to handle the MVC routes
@@ -13,7 +14,7 @@ var router = require('./router.js'); //import our router.js file to handle the M
 //MONGODB address to connect to.
 //process.env.MONGOLAB_URI is the variable automatically put into your node application by Heroku is you are using mongoLab
 //otherwise fallback to localhost. The string after mongodb://localhost is the database name. It can be anything you want. 
-var dbURL = process.env.MONGOLAB_URI || "mongodb://heroku_zqw6r877:pjn3971qletot2ri4mt5ot0o0p@ds011419.mlab.com:11419/heroku_zqw6r877";
+var dbURL = process.env.MONGOLAB_URI || "mongodb://heroku_52nscjkt:mdkb4sdu52n3qe09qins945978@ds015919.mlab.com:15919/heroku_52nscjkt";
 
 //call mongoose's connect function and pass in the url. If there are any errors connecting, we will throw it and kill the server. 
 //Once connected, the mongoose package will stay connected for every file that requires it in this project
@@ -49,6 +50,17 @@ app.use(bodyParser.urlencoded({
 // parse application/json body requests. These are usually POST requests or requests with a body parameter in AJAX
 //Alternatively, this might be a web API request from a mobile app, another server or another application
 app.use(bodyParser.json());
+
+// The key is the name of your cookie so that it can be tracked in requests
+// The secret is a private string used as a seed for hashing/creating unique session keys. This makes it so your unique session keys are different from other servers using express.
+// The resave option just tells the session module to refresh the key to keep it active.
+// The saveUninitialized option just tells the module to always make sessions even when not logged in. This automatically generates each user a session key instead of having you manually make them.
+app.use(session({
+    key: 'sessionid',
+    secret: 'Domo Arigato',
+    resave: true,
+    saveUninitialized: true
+}));
 
 //app.set sets one of the express config options
 //set up the view (V of MVC) to use jade (not shown in this example but needed for express to work)

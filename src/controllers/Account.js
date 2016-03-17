@@ -12,6 +12,8 @@ var signupPage = function (req, res) {
 }
 
 var logout = function (req, res) {
+    // The destroy function will remove a user’s session. We call this on logout so that our server knows they are no longer logged in.
+    req.session.destroy();
     res.redirect('/');
 }
 
@@ -33,6 +35,9 @@ var login = function (req, res) {
                 err: "RAWR! Incorrect username or password"
             }); //if error, return it
         }
+
+        // When a user logs in, we will attach all of the fields from toAPI to their session for tracking.
+        req.session.account = account.toAPI();
 
         //return success
         res.json({
@@ -81,6 +86,9 @@ var signup = function (req, res) {
                     err: err
                 }); //if error, return it
             }
+
+            // Since the user is signing up and being logged in automatically, we need to duplicate the account data in the session just like they had logged in.
+            req.session.account = newAccount.toAPI();
 
             //return success
             res.json({
